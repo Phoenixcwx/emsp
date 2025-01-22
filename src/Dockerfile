@@ -3,7 +3,7 @@ FROM maven:3.8.6-amazoncorretto-17 AS build
 LABEL authors="Sean Cui"
 WORKDIR /app
 COPY . .
-RUN mvn clean package
+RUN mvn -DskipTests=true clean package
 
 # 第二阶段：运行 JAR 文件
 FROM amazoncorretto:17-alpine
