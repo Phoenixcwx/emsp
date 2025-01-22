@@ -36,7 +36,7 @@ jobs:
         run: |
           az acr build --registry $AZURE_CONTAINER_REGISTRY \
                        --image $AZURE_CONTAINER_REGISTRY.azurecr.io/$APPLICATION_NAME:$GITHUB_SHA \
-                       --file ./emsp-interfaces/src/Dockerfile \
+                       --file ./src/Dockerfile \
                        --resource-group test \
                        --platform linux \
                        https://github.com/Phoenixcwx/emsp.git
