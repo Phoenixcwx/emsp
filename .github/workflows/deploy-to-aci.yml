@@ -39,7 +39,7 @@ jobs:
                        --file ./src/Dockerfile \
                        --resource-group test \
                        --platform linux \
-                       https://github.com/Phoenixcwx/emsp.git
+                       .
 
       - name: Deploy to Azure Container Instances
         run: |

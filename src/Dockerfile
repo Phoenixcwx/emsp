@@ -25,7 +25,7 @@ EXPOSE 8024 8124 8080
 
 # 复制并设置启动脚本
 WORKDIR /app
-COPY ./src/start.sh ./start.sh
+COPY ./src/start.sh /start.sh
 RUN chmod +x /start.sh
 
 # 启动 Axon Server 和 Spring Boot 应用
