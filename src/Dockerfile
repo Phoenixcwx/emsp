@@ -6,7 +6,7 @@ COPY . .
 RUN mvn -DskipTests=true clean package
 
 # 构建 Axon Server
-FROM axoniq/axonserver:latest as axonserver
+FROM axoniq/axonserver:latest AS axonserver
 
 # 最终镜像
 FROM amazoncorretto:17-alpine
@@ -22,5 +22,11 @@ COPY --from=build /app/target/emsp-0.0.1-SNAPSHOT.jar app.jar
 # 暴露端口
 EXPOSE 8024 8124 8080
 
+
+# 复制并设置启动脚本
+WORKDIR /app
+COPY ./src/start.sh ./start.sh
+RUN chmod +x /start.sh
+
 # 启动 Axon Server 和 Spring Boot 应用
-CMD /axonserver/axonserver & java -jar app.jar
+CMD ["/start.sh"]
