@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AccountStatusChangedEvent {
-    private String email;
+    private Long accountId;
     private AccountStatus status;
 }

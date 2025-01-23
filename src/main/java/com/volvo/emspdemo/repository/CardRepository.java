@@ -1,16 +1,15 @@
 package com.volvo.emspdemo.repository;
 
-import com.volvo.emspdemo.domain.CardAggregate;
+import com.volvo.emspdemo.domain.Card;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.smartcardio.Card;
 import java.util.List;
 
 @Repository
-public interface CardRepository extends JpaRepository<CardAggregate, Long> {
+public interface CardRepository extends JpaRepository<Card, Long> {
 
-    List<CardAggregate> findByContractId(String contractId);
+    List<Card> findByAccountId(Long accountId);
 
-    CardAggregate findByRfId(String rfId);
+    Card findByRfId(String rfId);
 }

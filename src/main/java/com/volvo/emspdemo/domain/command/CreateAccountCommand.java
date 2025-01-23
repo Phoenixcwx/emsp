@@ -11,8 +11,8 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @NoArgsConstructor
 public class CreateAccountCommand {
     @TargetAggregateIdentifier
-    private Long id;
+    private Long accountId;
     private String email;
-    @Pattern(regexp = "[A-Z]{2}[\\dA-Z]{3}[\\dA-Z]{9}", message = "Contract ID must be in EMAID format")
+    @Pattern(regexp = "[a-z]{2}[\\da-z]{3}[\\da-z]{9}", message = "Contract ID must be in EMAID format")
     private String contractId;
 }

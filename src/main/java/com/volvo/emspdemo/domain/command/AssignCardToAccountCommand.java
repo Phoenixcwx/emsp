@@ -7,7 +7,8 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 @Data
 @AllArgsConstructor
 public class AssignCardToAccountCommand {
+    private Long accountId;
+    private String contractId;
     @TargetAggregateIdentifier
-    private String email;
-    private String uid;
+    private Long cardId;
 }

@@ -1,7 +1,6 @@
 package com.volvo.emspdemo.util;
 
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,7 +12,6 @@ public class ContractIdGenerator {
 
     private final SequenceManager sequenceManager;
 
-    @Autowired
     public ContractIdGenerator(SequenceManager sequenceManager) {
         this.sequenceManager = sequenceManager;
     }

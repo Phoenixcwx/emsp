@@ -2,7 +2,6 @@ package com.volvo.emspdemo;
 
 import com.volvo.emspdemo.util.ContractIdGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashSet;
@@ -17,8 +16,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 public class ContractIdGeneratorTest {
 
-    @Autowired
-    ContractIdGenerator contractIdGenerator;
+    private final ContractIdGenerator contractIdGenerator;
+
+    public ContractIdGeneratorTest(ContractIdGenerator contractIdGenerator) {
+        this.contractIdGenerator = contractIdGenerator;
+    }
 
     @Test
     public void testConcurrentIdGeneration() throws InterruptedException {

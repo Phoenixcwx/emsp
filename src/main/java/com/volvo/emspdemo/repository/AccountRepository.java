@@ -1,10 +1,10 @@
 package com.volvo.emspdemo.repository;
 
-import com.volvo.emspdemo.domain.AccountAggregate;
+import com.volvo.emspdemo.domain.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AccountRepository extends JpaRepository<AccountAggregate, Long>{
-    AccountAggregate findByEmail(String email);
+public interface AccountRepository extends JpaRepository<Account, Long>{
+    Account findByEmail(String email);
 }

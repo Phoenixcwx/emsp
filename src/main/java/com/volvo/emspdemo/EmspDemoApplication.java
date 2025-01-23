@@ -15,11 +15,11 @@ public class EmspDemoApplication {
     public static void main(String[] args) {
         // 手动配置 Axon Server
         // 手动配置 Axon
-        Configuration axonConfig = DefaultConfigurer.defaultConfiguration()
+        /*Configuration axonConfig = DefaultConfigurer.defaultConfiguration()
                 .configureEmbeddedEventStore(c -> new InMemoryEventStorageEngine()) // 使用内存事件存储
                 .configureEventBus(c -> SimpleEventBus.builder().build()) // 配置事件总线
                 .start(); // 启动 Axon 配置
-
+*/
         SpringApplication.run(EmspDemoApplication.class, args);
     }
 

@@ -9,15 +9,21 @@ import com.volvo.emspdemo.domain.event.CardStatusChangedEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.Getter;
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+
+import java.time.LocalDateTime;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
@@ -25,52 +31,43 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 @Data
 @Aggregate
 @Getter
-public class CardAggregate {
+@EnableJpaAuditing
+public class Card {
     @Id
     @AggregateIdentifier
-    private String rfId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String contractId;
+    private String rfId;
 
     @Enumerated(EnumType.STRING)
     private CardStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "email")
-    private AccountAggregate account;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    private Account account;
 
-    public CardAggregate() {
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
+    public Card() {
     }
 
     @CommandHandler
-    public CardAggregate(CreateCardCommand command) {
-        apply(new CardCreatedEvent(command.getRfId(), command.getContractId()));
+    public Card(CreateCardCommand command) {
+        apply(new CardCreatedEvent(command.getCardId(), command.getRfId(), command.getContractId()));
     }
 
     @CommandHandler
     public void handle(AssignCardToAccountCommand command) {
-        apply(new CardAssignedToAccountEvent(command.getEmail(), command.getUid()));
+        apply(new CardAssignedToAccountEvent(command.getCardId(), command.getAccountId(), command.getContractId()));
     }
 
     @CommandHandler
     public void handle(ChangeCardStatusCommand command) {
-        apply(new CardStatusChangedEvent(command.getUid(), command.getStatus()));
-    }
-
-    @EventSourcingHandler
-    public void on(CardCreatedEvent event) {
-        this.rfId = event.getRfId();
-        this.contractId = event.getContractId();
-        this.status = CardStatus.CREATED;
-    }
-
-    @EventSourcingHandler
-    public void on(CardAssignedToAccountEvent event) {
-        this.status = CardStatus.ASSIGNED;
-    }
-
-    @EventSourcingHandler
-    public void on(CardStatusChangedEvent event) {
-        this.status = event.getStatus();
+        apply(new CardStatusChangedEvent(command.getCardId(), command.getStatus()));
     }
 }

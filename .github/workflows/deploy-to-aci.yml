@@ -9,7 +9,7 @@ env:
   AZURE_CONTAINER_REGISTRY: emspregistry
   RESOURCE_GROUP: test
   CONTAINER_INSTANCE_NAME: emsp-container
-  APPLICATION_NAME: emsp-interfaces
+  APPLICATION_NAME: emsp
 
 jobs:
   build-and-deploy:
