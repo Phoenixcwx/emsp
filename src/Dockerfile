@@ -15,6 +15,7 @@ WORKDIR /app
 
 # 复制 Axon Server
 COPY --from=axonserver /axonserver /axonserver
+RUN echo "axoniq.axonserver.standalone=true" >> /axonserver/axonserver.properties
 
 # 复制 应用
 COPY --from=build /app/target/emsp-0.0.1-SNAPSHOT.jar app.jar

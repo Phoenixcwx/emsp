@@ -7,6 +7,7 @@ import com.volvo.emspdemo.domain.command.CreateAccountCommand;
 import com.volvo.emspdemo.repository.AccountRepository;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +18,7 @@ public class AccountServiceTest {
     private final CommandGateway commandGateway;
     private final AccountRepository accountRepository;
 
+    @Autowired
     public AccountServiceTest(AccountRepository accountRepository, CommandGateway commandGateway) {
         this.accountRepository = accountRepository;
         this.commandGateway = commandGateway;

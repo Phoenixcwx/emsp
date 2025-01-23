@@ -23,7 +23,6 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +33,6 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 @Aggregate
 @Getter
 @Setter
-@EnableJpaAuditing
 public class Account {
     @Id
     @AggregateIdentifier

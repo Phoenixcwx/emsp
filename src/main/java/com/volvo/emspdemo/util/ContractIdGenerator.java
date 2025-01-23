@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ContractIdGenerator {
     private static final String LOCK_NAME = "contractIdGeneratorLock";
-    private static final String ID_FORMAT = "%s-%03d-%09s"; // 使用 %s 代替 %d 以支持 36 进制
+    private static final String ID_FORMAT = "%s-%s-%s"; // 使用 %s 代替 %d 以支持 36 进制
      private static final String NINE_DIG_SEQ_NAME =  "contract_id_sequence_9dig";
     private static final String  THREE_DIG_SEQ_NAME = "contract_id_sequence_3dig";
 
@@ -19,7 +19,7 @@ public class ContractIdGenerator {
     @SchedulerLock(name = LOCK_NAME, lockAtLeastFor = "1s", lockAtMostFor = "10s")
     public String generateContractIdWithPlaceHolder() {
         // 获取三位序列号
-        long threeDig = sequenceManager.getNextSequenceValue(THREE_DIG_SEQ_NAME);
+        long threeDig = sequenceManager.getCurrentSequenceValue(THREE_DIG_SEQ_NAME);
 
         // 获取序列号
         long nineDig = sequenceManager.getNextSequenceValue(NINE_DIG_SEQ_NAME);
@@ -31,15 +31,20 @@ public class ContractIdGenerator {
         }
 
         // 将序列号转换为 36 进制的字符串
-        String base36Seq3 = Base36Util.toBase36(nineDig);
+        String base36Seq3 = Base36Util.toBase36(threeDig);
         String base36Seq9 = Base36Util.toBase36(nineDig);
+
+        String paddedStr3 = Base36Util.formatString(base36Seq3, 3);
+        String paddedStr9 = Base36Util.formatString(base36Seq9, 9);
 
         // 生成 Contract ID
         String prefix = "aa";
-        String contractId = String.format(ID_FORMAT, prefix, base36Seq3, base36Seq9);
+        String contractId = String.format(ID_FORMAT, prefix, paddedStr3, paddedStr9);
 
         return contractId;
     }
+
+
 
     @SchedulerLock(name = LOCK_NAME, lockAtLeastFor = "1s", lockAtMostFor = "10s")
     public String generateContractIdWithoutPlaceHolder() {

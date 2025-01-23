@@ -31,7 +31,6 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 @Data
 @Aggregate
 @Getter
-@EnableJpaAuditing
 public class Card {
     @Id
     @AggregateIdentifier
