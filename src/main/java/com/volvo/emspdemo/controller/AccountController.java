@@ -1,16 +1,16 @@
 package com.volvo.emspdemo.controller;
 
 import com.volvo.emspdemo.domain.Account;
-import com.volvo.emspdemo.domain.command.ChangeAccountStatusCommand;
-import com.volvo.emspdemo.domain.command.CreateAccountCommand;
+import com.volvo.emspdemo.domain.ResponseWrapper;
+import com.volvo.emspdemo.domain.event.AccountCreatedEvent;
+import com.volvo.emspdemo.domain.event.AccountStatusChangedEvent;
+import com.volvo.emspdemo.domain.event.CardAssignedToAccountEvent;
 import com.volvo.emspdemo.domain.mapper.AccountMapper;
+import com.volvo.emspdemo.domain.service.AccountService;
+import com.volvo.emspdemo.dto.AssignCardToAccountRequest;
 import com.volvo.emspdemo.dto.ChangeAccountStatusRequest;
 import com.volvo.emspdemo.dto.CreateAccountRequest;
-import com.volvo.emspdemo.repository.AccountRepository;
-import com.volvo.emspdemo.util.ContractIdGenerator;
-import org.apache.commons.lang3.StringUtils;
-import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.http.ResponseEntity;
+import com.volvo.emspdemo.dto.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,46 +25,52 @@ import java.util.List;
 @RequestMapping("/accounts")
 public class AccountController {
 
-    private final CommandGateway commandGateway;
-    private final AccountRepository accountRepository;
-    private final ContractIdGenerator contractIdGenerator;
+    private final AccountService accountService;
 
-    public AccountController(CommandGateway commandGateway, AccountRepository accountRepository, ContractIdGenerator contractIdGenerator) {
-        this.commandGateway = commandGateway;
-        this.accountRepository = accountRepository;
-        this.contractIdGenerator = contractIdGenerator;
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @PostMapping
-    public ResponseEntity<String> createAccount(@RequestBody CreateAccountRequest request) {
-        CreateAccountCommand command = AccountMapper.INSTANCE.fromRequest(request);
-        if(StringUtils.isBlank(command.getContractId())) {
-            command.setContractId(contractIdGenerator.generateContractIdWithoutPlaceHolder());
-        }
-        commandGateway.send(command);
-        return ResponseEntity.ok("Account created");
+    public ResponseWrapper<Account> createAccount(@RequestBody CreateAccountRequest request) {
+        AccountCreatedEvent event = AccountMapper.INSTANCE.fromRequest(request);
+        Account account = accountService.create(event);
+        return ResponseWrapper.success(account);
     }
 
     @PutMapping
-    public ResponseEntity<String> changeAccountStatus(@RequestBody ChangeAccountStatusRequest request) {
-        ChangeAccountStatusCommand command = AccountMapper.INSTANCE.fromRequest(request);
-        commandGateway.send(command);
-        return ResponseEntity.ok("Account status changed");
+    public ResponseWrapper<Account> changeAccountStatus(@RequestBody ChangeAccountStatusRequest request) {
+        AccountStatusChangedEvent event = AccountMapper.INSTANCE.fromRequest(request);
+        Account result = accountService.updateStatus(event);
+        return ResponseWrapper.success(result);
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<Account> getAccountByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(accountRepository.findByEmail(email));
+    public ResponseWrapper<Account> getAccountByEmail(@PathVariable String email) {
+        return ResponseWrapper.success(accountService.getAccountByEmail(email));
     }
 
     @GetMapping("/id/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
-        return ResponseEntity.ok(accountRepository.findById(id).orElse(null));
+    public ResponseWrapper<Account> getAccountById(@PathVariable Long id) {
+        return ResponseWrapper.success(accountService.getAccountById(id));
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Account>> getAllAccount() {
-        return ResponseEntity.ok(accountRepository.findAll());
+    public ResponseWrapper<List<Account>> getAllAccount() {
+        return ResponseWrapper.success(accountService.getAccounts());
+    }
+
+    @GetMapping("/page")
+    public ResponseWrapper<List<Account>> getAllAccountPaged(@RequestBody PageRequest request) {
+        ResponseWrapper<List<Account>> results = accountService.getAccounts(request);
+        return results;
+    }
+
+    @PutMapping("/{id}/card")
+    public ResponseWrapper<Account> assignCardToAccount(@RequestBody AssignCardToAccountRequest request) {
+        CardAssignedToAccountEvent event = AccountMapper.INSTANCE.fromRequest(request);
+        Account account = accountService.addCard(event);
+        return ResponseWrapper.success(account);
     }
 
 }

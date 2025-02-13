@@ -1,17 +1,14 @@
 package com.volvo.emspdemo.controller;
 
 import com.volvo.emspdemo.domain.Card;
-import com.volvo.emspdemo.domain.command.AssignCardToAccountCommand;
-import com.volvo.emspdemo.domain.command.ChangeCardStatusCommand;
-import com.volvo.emspdemo.domain.command.CreateCardCommand;
-import com.volvo.emspdemo.domain.mapper.AccountMapper;
+import com.volvo.emspdemo.domain.ResponseWrapper;
+import com.volvo.emspdemo.domain.event.CardCreatedEvent;
+import com.volvo.emspdemo.domain.event.CardStatusChangedEvent;
 import com.volvo.emspdemo.domain.mapper.CardMapper;
-import com.volvo.emspdemo.dto.AssignCardToAccountRequest;
+import com.volvo.emspdemo.domain.service.CardService;
 import com.volvo.emspdemo.dto.ChangeCardStatusRequest;
 import com.volvo.emspdemo.dto.CreateCardRequest;
-import com.volvo.emspdemo.repository.CardRepository;
-import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.http.ResponseEntity;
+import com.volvo.emspdemo.dto.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,42 +23,41 @@ import java.util.List;
 @RequestMapping("/cards")
 public class CardController {
 
-    private final CommandGateway commandGateway;
-    private final CardRepository cardRepository;
+    private final CardService cardService;
 
-    public CardController(CommandGateway commandGateway, CardRepository cardRepository) {
-        this.commandGateway = commandGateway;
-        this.cardRepository = cardRepository;
+    public CardController(CardService cardService) {
+        this.cardService = cardService;
     }
 
     @PostMapping
-    public ResponseEntity<String> createCard(@RequestBody CreateCardRequest request) {
-        CreateCardCommand command = CardMapper.INSTANCE.fromRequest(request);
-        commandGateway.send(command);
-        return ResponseEntity.ok("Card created");
+    public ResponseWrapper<Card> createCard(@RequestBody CreateCardRequest request) {
+        CardCreatedEvent event = CardMapper.INSTANCE.fromRequest(request);
+        Card card = cardService.createCard(event);
+        return ResponseWrapper.success(card);
     }
 
     @PutMapping("/status")
-    public ResponseEntity<String> changeCardStatus(@RequestBody ChangeCardStatusRequest request) {
-        ChangeCardStatusCommand command = CardMapper.INSTANCE.fromRequest(request);
-        commandGateway.send(command);
-        return ResponseEntity.ok("Card status changed");
+    public ResponseWrapper<Card> changeCardStatus(@RequestBody ChangeCardStatusRequest request) {
+        CardStatusChangedEvent event = CardMapper.INSTANCE.fromRequest(request);
+        Card card = cardService.updateStatus(event);
+        return ResponseWrapper.success(card);
     }
 
     @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<Card>> getCardsByAccountId(@PathVariable Long accountId) {
-        return ResponseEntity.ok(cardRepository.findByAccountId(accountId));
+    public ResponseWrapper<List<Card>> getCardsByAccountId(@PathVariable Long accountId) {
+        return ResponseWrapper.success(cardService.findByAccountId(accountId));
     }
 
     @GetMapping("/rfid/{rfId}")
-    public ResponseEntity<Card> getCardByRfId(@PathVariable String rfId) {
-        return ResponseEntity.ok(cardRepository.findByRfId(rfId));
+    public ResponseWrapper<Card> getCardByRfId(@PathVariable String rfId) {
+        return ResponseWrapper.success(cardService.findByCardRfid(rfId));
     }
 
-    @PutMapping("/account")
-    public ResponseEntity<String> assignCardToAccount(@RequestBody AssignCardToAccountRequest request) {
-        AssignCardToAccountCommand command = AccountMapper.INSTANCE.fromRequest(request);
-        commandGateway.send(command);
-        return ResponseEntity.ok("Card assigned to account");
+    @GetMapping("/page")
+    public ResponseWrapper<List<Card>> getAllAccountPaged(@RequestBody PageRequest request) {
+        return cardService.findAll(request);
     }
+
+
+
 }

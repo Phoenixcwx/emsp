@@ -1,11 +1,5 @@
 package com.volvo.emspdemo.domain;
 
-import com.volvo.emspdemo.domain.command.AssignCardToAccountCommand;
-import com.volvo.emspdemo.domain.command.ChangeCardStatusCommand;
-import com.volvo.emspdemo.domain.command.CreateCardCommand;
-import com.volvo.emspdemo.domain.event.CardAssignedToAccountEvent;
-import com.volvo.emspdemo.domain.event.CardCreatedEvent;
-import com.volvo.emspdemo.domain.event.CardStatusChangedEvent;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,26 +8,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
 import lombok.Getter;
-import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.modelling.command.AggregateIdentifier;
-import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 
-import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Entity
-@Data
-@Aggregate
 @Getter
-public class Card {
+public final class Card {
     @Id
-    @AggregateIdentifier
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -52,21 +37,42 @@ public class Card {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Card() {
+    protected Card() {
     }
 
-    @CommandHandler
-    public Card(CreateCardCommand command) {
-        apply(new CardCreatedEvent(command.getCardId(), command.getRfId(), command.getContractId()));
+    protected Card(Long id, String rfId, CardStatus status, Account account) {
+        this.id = id;
+        this.rfId = rfId;
+        this.status = status;
+        this.account = account;
     }
 
-    @CommandHandler
-    public void handle(AssignCardToAccountCommand command) {
-        apply(new CardAssignedToAccountEvent(command.getCardId(), command.getAccountId(), command.getContractId()));
+    protected Card(Long id, String rfId, CardStatus status) {
+        this.id = id;
+        this.rfId = rfId;
+        this.status = status;
     }
 
-    @CommandHandler
-    public void handle(ChangeCardStatusCommand command) {
-        apply(new CardStatusChangedEvent(command.getCardId(), command.getStatus()));
+    public static Card createNew(String rfId, CardStatus status) {
+        Card card =  new Card();
+        card.rfId = rfId;
+        card.status = status;
+        card.createdAt = LocalDateTime.now();
+        card.updatedAt = LocalDateTime.now();
+        return card;
+    }
+
+
+    public Card assignCardToAccount(Account account) {
+        this.account = account;
+        this.status = CardStatus.ASSIGNED;
+        this.updatedAt = LocalDateTime.now();
+        return this;
+    }
+
+    public Card changeState(CardStatus status) {
+        this.status = status;
+        this.updatedAt = LocalDateTime.now();
+        return this;
     }
 }

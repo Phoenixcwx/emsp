@@ -1,9 +1,7 @@
 package com.volvo.emspdemo.domain;
 
-import com.volvo.emspdemo.domain.command.ChangeAccountStatusCommand;
-import com.volvo.emspdemo.domain.command.CreateAccountCommand;
+import com.google.common.collect.Lists;
 import com.volvo.emspdemo.domain.event.AccountCreatedEvent;
-import com.volvo.emspdemo.domain.event.AccountStatusChangedEvent;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,26 +14,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
-import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.modelling.command.AggregateIdentifier;
-import org.axonframework.spring.stereotype.Aggregate;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Entity
-@Aggregate
 @Getter
-@Setter
-public class Account {
+@Component
+public final class Account {
     @Id
-    @AggregateIdentifier
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -59,16 +53,47 @@ public class Account {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Account() {
+    protected Account() {
     }
 
-    @CommandHandler
-    public Account(CreateAccountCommand command) {
-        apply(new AccountCreatedEvent(command.getAccountId(), command.getEmail(), command.getContractId()));
+    protected Account(Long id, String email, AccountStatus status, String contractId, List<Card> cards, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.email = email;
+        this.status = status;
+        this.contractId = contractId;
+        this.cards = cards;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    @CommandHandler
-    public void handle(ChangeAccountStatusCommand command) {
-        apply(new AccountStatusChangedEvent(command.getAccountId(), command.getStatus()));
+    protected Account(Long id, String email, AccountStatus status, String contractId) {
+        this(id, email, status, contractId, Lists.newArrayList(), LocalDateTime.now(), LocalDateTime.now());
     }
+
+    public static Account createNew(AccountCreatedEvent event) {
+        if(StringUtils.isBlank(event.getContractId())) {
+            EmaId emaid = EmaId.creatNewFor("cn", "tjs");
+            event.setContractId(emaid.toContractId());
+        }
+        return new Account(event.getAccountId(), event.getEmail(), AccountStatus.CREATED, event.getContractId());
+    }
+
+    public Account updateStatus(AccountStatus newStatus) {
+        this.status = newStatus;
+        return this;
+    }
+
+    public Account updateContractId(String newContractId) {
+        this.contractId = newContractId;
+        return this;
+    }
+
+    public Account addCard(Card newCard) {
+        if(null == this.getCards()) {
+            this.cards = new ArrayList<>();
+        }
+        cards.add(newCard);
+        return this;
+    }
+
 }
