@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class EmaIdTest {
 
     @Test
-    void creatNewFor() {
+    void creatNewTest() {
         EmaId newID = EmaId.creatNewFor("cn", "tjs");
         assertNotNull(newID);
         String contractID = newID.toContractId();
@@ -19,9 +19,12 @@ class EmaIdTest {
         String contractID2 = newID2.toContractId();
         assertEquals("cntjs0000000011", contractID2);
 
-        EmaId newID3 = EmaId.creatNewFor("cn", "tjs");
-        assertNotNull(newID3);
-        String contractID3 = newID3.toContractId();
-        assertEquals("cntjs0000000021", contractID3);
+        String lastContractId = "";
+        for (int i = 0; i < 9; i++) {
+            EmaId newID3 = EmaId.creatNewFor("cn", "tjs");
+            assertNotNull(newID3);
+            lastContractId = newID3.toContractId();
+        }
+        assertEquals("cntjs00000000a1", lastContractId);
       }
 }

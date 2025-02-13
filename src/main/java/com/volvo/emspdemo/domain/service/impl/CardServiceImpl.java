@@ -50,9 +50,9 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public ResponseWrapper<List<Card>> findAll(PageRequest request) {
+    public ResponseWrapper<List<Card>> getCards(PageRequest request) {
         org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(request.getPageNumber() - 1, request.getPageSize());
-        Page<Card> cards = cardRepository.findAll(pageRequest);
+        Page<Card> cards = cardRepository.findCardByUpdatedAtAfter(request.getUpdateTime(), pageRequest);
 
         ResponseWrapper.PageMetadata pageMetadata = new ResponseWrapper.PageMetadata();
         pageMetadata.setCurrentPage(cards.getNumber());

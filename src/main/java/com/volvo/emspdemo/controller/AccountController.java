@@ -45,21 +45,6 @@ public class AccountController {
         return ResponseWrapper.success(result);
     }
 
-    @GetMapping("/email/{email}")
-    public ResponseWrapper<Account> getAccountByEmail(@PathVariable String email) {
-        return ResponseWrapper.success(accountService.getAccountByEmail(email));
-    }
-
-    @GetMapping("/id/{id}")
-    public ResponseWrapper<Account> getAccountById(@PathVariable Long id) {
-        return ResponseWrapper.success(accountService.getAccountById(id));
-    }
-
-    @GetMapping("/all")
-    public ResponseWrapper<List<Account>> getAllAccount() {
-        return ResponseWrapper.success(accountService.getAccounts());
-    }
-
     @GetMapping("/page")
     public ResponseWrapper<List<Account>> getAllAccountPaged(@RequestBody PageRequest request) {
         ResponseWrapper<List<Account>> results = accountService.getAccounts(request);

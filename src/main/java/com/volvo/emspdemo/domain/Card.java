@@ -40,19 +40,6 @@ public final class Card {
     protected Card() {
     }
 
-    protected Card(Long id, String rfId, CardStatus status, Account account) {
-        this.id = id;
-        this.rfId = rfId;
-        this.status = status;
-        this.account = account;
-    }
-
-    protected Card(Long id, String rfId, CardStatus status) {
-        this.id = id;
-        this.rfId = rfId;
-        this.status = status;
-    }
-
     public static Card createNew(String rfId, CardStatus status) {
         Card card =  new Card();
         card.rfId = rfId;

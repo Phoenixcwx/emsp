@@ -55,7 +55,7 @@ public class CardController {
 
     @GetMapping("/page")
     public ResponseWrapper<List<Card>> getAllAccountPaged(@RequestBody PageRequest request) {
-        return cardService.findAll(request);
+        return cardService.getCards(request);
     }
 
 

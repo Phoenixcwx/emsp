@@ -11,7 +11,6 @@ import com.volvo.emspdemo.domain.service.CardService;
 import com.volvo.emspdemo.dto.PageRequest;
 import com.volvo.emspdemo.repository.AccountRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ResponseWrapper<List<Account>> getAccounts(PageRequest request) {
         org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(request.getPageNumber() - 1, request.getPageSize());
-        Page<Account> accounts = accountRepository.findAll(pageRequest);
+        Page<Account> accounts = accountRepository.findAccountByUpdatedAtAfter(request.getUpdateTime(), pageRequest);
         ResponseWrapper.PageMetadata pageMetadata = new ResponseWrapper.PageMetadata();
         pageMetadata.setCurrentPage(accounts.getNumber());
         pageMetadata.setPageSize(accounts.getTotalPages());

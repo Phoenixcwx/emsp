@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -44,7 +45,7 @@ public final class Account {
 
     private String contractId;
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Card> cards;
 
     @CreatedDate
@@ -89,10 +90,11 @@ public final class Account {
     }
 
     public Account addCard(Card newCard) {
+        //Hibernate.initialize(this.getCards());
         if(null == this.getCards()) {
             this.cards = new ArrayList<>();
         }
-        cards.add(newCard);
+        this.cards.add(newCard);
         return this;
     }
 
