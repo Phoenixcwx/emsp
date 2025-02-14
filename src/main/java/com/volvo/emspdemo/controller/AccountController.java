@@ -56,7 +56,7 @@ public class AccountController {
         return results;
     }
 
-    @PutMapping("/{id}/card")
+    @PutMapping("/card")
     public ResponseWrapper<Account> assignCardToAccount(@RequestBody AssignCardToAccountRequest request) {
         CardAssignedToAccountEvent event = AccountMapper.INSTANCE.fromRequest(request);
         Account account = accountService.addCard(event);

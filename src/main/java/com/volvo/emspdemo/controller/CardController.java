@@ -11,7 +11,6 @@ import com.volvo.emspdemo.dto.CreateCardRequest;
 import com.volvo.emspdemo.dto.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,11 +43,6 @@ public class CardController {
         CardStatusChangedEvent event = CardMapper.INSTANCE.fromRequest(request);
         Card card = cardService.updateStatus(event);
         return ResponseWrapper.success(card);
-    }
-
-    @GetMapping("/account/{accountId}")
-    public ResponseWrapper<List<Card>> getCardsByAccountId(@PathVariable Long accountId) {
-        return ResponseWrapper.success(cardService.findByAccountId(accountId));
     }
 
     @GetMapping("/page")

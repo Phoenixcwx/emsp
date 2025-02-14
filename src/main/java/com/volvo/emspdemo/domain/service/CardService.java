@@ -20,6 +20,4 @@ public interface CardService {
     Optional<Card> findById(Long id);
 
     ResponseWrapper<List<Card>> getCards(PageRequest pageable);
-
-    List<Card> findByAccountId(Long accountId);
 }

@@ -12,6 +12,6 @@ public class CreateAccountRequest {
     private String email;
 
     @NotNull(message = "Contract ID cannot be null")
-    @Pattern(regexp = "[a-z]{2}[\\da-z]{3}[\\da-z]{9}", message = "Contract ID must be in EMAID format")
+    @Pattern(regexp = "[a-z]{2}[\\da-z]{13}", message = "Contract ID must be in EMAID format")
     private String contractId;
 }
