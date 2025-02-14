@@ -9,14 +9,17 @@ import com.volvo.emspdemo.domain.service.CardService;
 import com.volvo.emspdemo.dto.ChangeCardStatusRequest;
 import com.volvo.emspdemo.dto.CreateCardRequest;
 import com.volvo.emspdemo.dto.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -54,8 +57,11 @@ public class CardController {
     }
 
     @GetMapping("/page")
-    public ResponseWrapper<List<Card>> getAllAccountPaged(@RequestBody PageRequest request) {
-        return cardService.getCards(request);
+    public ResponseWrapper<List<Card>> getAllCardPaged(@RequestParam("pageSize") Integer pageSize,
+                                                       @RequestParam("pageNum") Integer pageNum,
+                                                       @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                       @RequestParam(name = "updateTime", required = false) LocalDateTime updateTime) {
+        return cardService.getCards(new PageRequest(pageNum, pageSize, updateTime));
     }
 
 

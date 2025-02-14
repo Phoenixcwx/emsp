@@ -73,14 +73,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ResponseWrapper<List<Account>> getAccounts(PageRequest request) {
         org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(request.getPageNumber() - 1, request.getPageSize());
-        Page<Account> accounts = accountRepository.findAccountByUpdatedAtAfter(request.getUpdateTime(), pageRequest);
+        Page<Account> accounts = null;
+        if(request.getUpdateTime() != null) {
+            accounts = accountRepository.findAccountByUpdatedAtAfter(request.getUpdateTime(), pageRequest);
+        } else {
+            accounts = accountRepository.findAll(pageRequest);
+        }
+
         ResponseWrapper.PageMetadata pageMetadata = new ResponseWrapper.PageMetadata();
-        pageMetadata.setCurrentPage(accounts.getNumber());
+        pageMetadata.setCurrentPage(request.getPageNumber());
         pageMetadata.setPageSize(accounts.getTotalPages());
         pageMetadata.setTotalPages(accounts.getTotalPages());
         pageMetadata.setTotalItems(accounts.getTotalElements());
+        List<Account> dataList = accounts.get().collect(Collectors.toList());
 
-        ResponseWrapper<List<Account>> result = ResponseWrapper.success(accounts.get().collect(Collectors.toList()), pageMetadata);
+        ResponseWrapper<List<Account>> result = ResponseWrapper.success(dataList, pageMetadata);
         return result;
     }
 

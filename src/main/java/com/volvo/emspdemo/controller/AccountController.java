@@ -11,14 +11,16 @@ import com.volvo.emspdemo.dto.AssignCardToAccountRequest;
 import com.volvo.emspdemo.dto.ChangeAccountStatusRequest;
 import com.volvo.emspdemo.dto.CreateAccountRequest;
 import com.volvo.emspdemo.dto.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -46,8 +48,11 @@ public class AccountController {
     }
 
     @GetMapping("/page")
-    public ResponseWrapper<List<Account>> getAllAccountPaged(@RequestBody PageRequest request) {
-        ResponseWrapper<List<Account>> results = accountService.getAccounts(request);
+    public ResponseWrapper<List<Account>> getAllAccountPaged(@RequestParam("pageSize") Integer pageSize,
+                                                             @RequestParam("pageNum") Integer pageNum,
+                                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                             @RequestParam(name = "updateTime", required = false) LocalDateTime updateTime) {
+        ResponseWrapper<List<Account>> results = accountService.getAccounts(new PageRequest(pageNum, pageSize, updateTime));
         return results;
     }
 
