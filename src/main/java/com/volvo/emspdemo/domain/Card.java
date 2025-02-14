@@ -1,5 +1,7 @@
 package com.volvo.emspdemo.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -28,13 +30,16 @@ public final class Card {
     private CardStatus status;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private Account account;
 
     @CreatedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
     protected Card() {

@@ -12,6 +12,7 @@ import com.volvo.emspdemo.dto.PageRequest;
 import com.volvo.emspdemo.repository.AccountRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,10 +50,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional(rollbackFor = Throwable.class)
     public Account addCard(CardAssignedToAccountEvent event) {
         // 检查 Card 和 Account 是否存在
-        Account account = accountRepository.findById(event.getAccountId()).orElseThrow();
+        Account account = accountRepository.findByIdWithCards(event.getAccountId()).orElseThrow();
         Optional<Card> cardOptional = cardService.findById(event.getCardId());
+
+        List<Long> bandedIds = account.getCards().stream().map(Card::getId).collect(Collectors.toList());
+        if(bandedIds.contains(event.getCardId())) {
+            throw new IllegalArgumentException("Card with id " + event.getCardId() + " already banded to account " + event.getAccountId());
+        }
 
         //更新 Card
         Card card =  cardOptional.orElseThrow();

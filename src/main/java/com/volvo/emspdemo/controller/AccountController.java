@@ -11,6 +11,7 @@ import com.volvo.emspdemo.dto.AssignCardToAccountRequest;
 import com.volvo.emspdemo.dto.ChangeAccountStatusRequest;
 import com.volvo.emspdemo.dto.CreateAccountRequest;
 import com.volvo.emspdemo.dto.PageRequest;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,7 @@ public class AccountController {
     public ResponseWrapper<List<Account>> getAllAccountPaged(@RequestParam("pageSize") Integer pageSize,
                                                              @RequestParam("pageNum") Integer pageNum,
                                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                             @Schema(name = "updateTime", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "2025-02-14 10:10:10")
                                                              @RequestParam(name = "updateTime", required = false) LocalDateTime updateTime) {
         ResponseWrapper<List<Account>> results = accountService.getAccounts(new PageRequest(pageNum, pageSize, updateTime));
         return results;
