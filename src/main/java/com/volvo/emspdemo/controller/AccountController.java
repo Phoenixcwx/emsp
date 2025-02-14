@@ -1,5 +1,6 @@
 package com.volvo.emspdemo.controller;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.volvo.emspdemo.domain.Account;
 import com.volvo.emspdemo.domain.ResponseWrapper;
 import com.volvo.emspdemo.domain.event.AccountCreatedEvent;
@@ -52,6 +53,7 @@ public class AccountController {
     public ResponseWrapper<List<Account>> getAllAccountPaged(@RequestParam("pageSize") Integer pageSize,
                                                              @RequestParam("pageNum") Integer pageNum,
                                                              @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone="GMT+8")
                                                              @Schema(name = "updateTime", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "2025-02-14 10:10:10")
                                                              @RequestParam(name = "updateTime", required = false) LocalDateTime updateTime) {
         ResponseWrapper<List<Account>> results = accountService.getAccounts(new PageRequest(pageNum, pageSize, updateTime));
