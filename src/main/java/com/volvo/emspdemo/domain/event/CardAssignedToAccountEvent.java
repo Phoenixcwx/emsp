@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class CardAssignedToAccountEvent {
     private Long cardId;
     private Long accountId;
-    private String contractId;
 }

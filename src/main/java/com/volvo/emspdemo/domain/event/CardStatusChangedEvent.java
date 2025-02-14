@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CardStatusChangedEvent {
-    private String rfId;
+    private Long cardId;
     private CardStatus status;
 }

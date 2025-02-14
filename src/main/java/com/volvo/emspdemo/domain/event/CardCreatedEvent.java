@@ -8,7 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CardCreatedEvent {
-    private Long cardId;
     private String rfId;
-    private String contractId;
 }

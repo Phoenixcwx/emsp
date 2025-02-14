@@ -22,6 +22,4 @@ public interface CardService {
     ResponseWrapper<List<Card>> getCards(PageRequest pageable);
 
     List<Card> findByAccountId(Long accountId);
-
-    Card findByCardRfid(String rfId);
 }

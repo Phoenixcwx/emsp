@@ -7,9 +7,6 @@ import lombok.Data;
 
 @Data
 public class CreateAccountRequest {
-    @NotNull(message = "id can not be null")
-    private Long id;
-
     @NotNull(message = "Email cannot be null")
     @Email(message = "Email should be valid")
     private String email;

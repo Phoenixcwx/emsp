@@ -9,8 +9,6 @@ import lombok.Data;
 public class AssignCardToAccountRequest {
     @NotNull(message = "account id can not be null")
     private Long accountId;
-    @NotNull(message = "contract id can not be null")
-    private String contractId;
     @NotNull(message = "card id can not be null")
     private Long cardId;
 }

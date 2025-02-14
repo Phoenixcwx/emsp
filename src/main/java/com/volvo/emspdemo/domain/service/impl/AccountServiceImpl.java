@@ -43,7 +43,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account updateStatus(AccountStatusChangedEvent event) {
         Account account = accountRepository.findById(event.getAccountId()).orElseThrow();
-        account.updateStatus(event.getStatus());
+        account = account.updateStatus(event.getStatus());
         account = accountRepository.save(account);
         return account;
     }

@@ -27,7 +27,7 @@ public class CardServiceTest {
         event.setRfId("001");
         Card card = cardService.createCard(event);
 
-        Card card2 = cardService.findByCardRfid(card.getRfId());
+        Card card2 = cardService.findById(card.getId()).get();
 
         assertEquals("001", card.getRfId());
         assertEquals(card.getRfId(), card2.getRfId());
@@ -40,7 +40,7 @@ public class CardServiceTest {
         Card card = cardService.createCard(event);
 
         CardStatusChangedEvent cardStatusChangedEvent = new CardStatusChangedEvent();
-        cardStatusChangedEvent.setRfId(card.getRfId());
+        cardStatusChangedEvent.setCardId(card.getId());
         cardStatusChangedEvent.setStatus(CardStatus.DEACTIVATED);
         Card card2 = cardService.updateStatus(cardStatusChangedEvent);
         assertEquals(CardStatus.DEACTIVATED, card2.getStatus());

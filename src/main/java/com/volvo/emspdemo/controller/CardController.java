@@ -51,13 +51,8 @@ public class CardController {
         return ResponseWrapper.success(cardService.findByAccountId(accountId));
     }
 
-    @GetMapping("/rfid/{rfId}")
-    public ResponseWrapper<Card> getCardByRfId(@PathVariable String rfId) {
-        return ResponseWrapper.success(cardService.findByCardRfid(rfId));
-    }
-
     @GetMapping("/page")
-    public ResponseWrapper<List<Card>> getAllCardPaged(@RequestParam("pageSize") Integer pageSize,
+    public ResponseWrapper<List<Card>> getCardPaged(@RequestParam("pageSize") Integer pageSize,
                                                        @RequestParam("pageNum") Integer pageNum,
                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                                        @RequestParam(name = "updateTime", required = false) LocalDateTime updateTime) {

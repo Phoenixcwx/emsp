@@ -15,7 +15,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Email;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -76,7 +75,7 @@ public final class Account {
             EmaId emaid = EmaId.creatNewFor("cn", "tjs");
             event.setContractId(emaid.toContractId());
         }
-        return new Account(event.getAccountId(), event.getEmail(), AccountStatus.CREATED, event.getContractId());
+        return new Account(null, event.getEmail(), AccountStatus.CREATED, event.getContractId());
     }
 
     public Account updateStatus(AccountStatus newStatus) {

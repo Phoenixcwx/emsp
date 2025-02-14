@@ -32,7 +32,7 @@ public class CardServiceImpl implements CardService {
 
     @Override
     public Card updateStatus(CardStatusChangedEvent event) {
-        Card card = cardRepository.findByRfId(event.getRfId()).orElseThrow();
+        Card card = cardRepository.findById(event.getCardId()).orElseThrow();
         card.changeState(event.getStatus());
         card = cardRepository.save(card);
         return card;
@@ -71,10 +71,5 @@ public class CardServiceImpl implements CardService {
     @Override
     public List<Card> findByAccountId(Long accountId) {
         return cardRepository.findByAccountId(accountId);
-    }
-
-    @Override
-    public Card findByCardRfid(String rfId) {
-        return cardRepository.findByRfId(rfId).orElse(null);
     }
 }

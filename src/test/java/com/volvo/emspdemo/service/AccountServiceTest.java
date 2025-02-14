@@ -69,7 +69,6 @@ public class AccountServiceTest {
         CardAssignedToAccountEvent cardAssignedToAccountEvent = new CardAssignedToAccountEvent();
         cardAssignedToAccountEvent.setCardId(card.getId());
         cardAssignedToAccountEvent.setAccountId(account.getId());
-        cardAssignedToAccountEvent.setContractId(account.getContractId());
 
         Account account1 = accountService.addCard(cardAssignedToAccountEvent);
         Assertions.assertEquals(1, account1.getCards().size());

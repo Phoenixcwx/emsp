@@ -1,10 +1,8 @@
 package com.volvo.emspdemo.domain;
 
-import com.google.common.collect.Lists;
 import lombok.Data;
 
 import java.util.Collection;
-import java.util.Collections;
 
 @Data
 public class ResponseWrapper<T> {
