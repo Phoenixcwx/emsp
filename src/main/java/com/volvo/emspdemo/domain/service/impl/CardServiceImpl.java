@@ -68,8 +68,4 @@ public class CardServiceImpl implements CardService {
         return ResponseWrapper.success(result, pageMetadata);
     }
 
-    @Override
-    public List<Card> findByAccountId(Long accountId) {
-        return cardRepository.findByAccountId(accountId);
-    }
 }
